@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useRef, useEffect } from "react";
 import "./RobotSimulator.css";
-import { Sim3D } from "@fruk/simulator-core";
+import { ISim3D } from "@fruk/simulator-core";
+import { createThreeSim3D } from "@fruk/simulator-core";
 import { StdWorldBuilder } from "./StdWorldBuilder";
-import { RobotHandle } from "@fruk/simulator-core/dist/engine/handles";
+import { IRobotHandle } from "@fruk/simulator-core";
 import { useSelector } from "react-redux";
 import { getMotorPower } from "./robotSimulatorSlice";
 
@@ -11,8 +12,8 @@ import { getMotorPower } from "./robotSimulatorSlice";
 export const RobotSimulator: FunctionComponent = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasParentRef = useRef<HTMLDivElement>(null);
-  const sim = useRef<Sim3D | null>(null);
-  const robotRef = useRef<RobotHandle | null>(null);
+  const sim = useRef<ISim3D | null>(null);
+  const robotRef = useRef<IRobotHandle | null>(null);
 
   const leftMotorPower = useSelector(getMotorPower(0));
   const rightMotorPower = useSelector(getMotorPower(1));
@@ -31,7 +32,7 @@ export const RobotSimulator: FunctionComponent = () => {
   useEffect(() => {
     updateCanvasSize();
 
-    sim.current = new Sim3D(canvasRef.current!);
+    sim.current = createThreeSim3D(canvasRef.current!);
     const robot = new StdWorldBuilder(sim.current).build();
     sim.current.beginRendering();
     robotRef.current = robot!;
